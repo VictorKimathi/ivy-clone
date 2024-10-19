@@ -1,0 +1,12 @@
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/ivywallet
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/version.json
+/home/victor/Documents/secondyear/flutter/ivy-clone/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z

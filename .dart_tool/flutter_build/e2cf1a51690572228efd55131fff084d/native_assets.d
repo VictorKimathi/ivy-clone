@@ -1,0 +1,1 @@
+ /home/victor/Documents/secondyear/flutter/ivy-clone/.dart_tool/flutter_build/e2cf1a51690572228efd55131fff084d/native_assets.yaml: 

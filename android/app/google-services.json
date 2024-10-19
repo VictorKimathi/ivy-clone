@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "713325574307",
+    "project_id": "bigtalk-468f9",
+    "storage_bucket": "bigtalk-468f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713325574307:android:9e216e5e4f8eb195626716",
+        "android_client_info": {
+          "package_name": "com.vk.ivy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvdT6NksL0H4GbkHD816mh1nTvyq3VOCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
