@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.ivywallet"
-    compileSdk = 33  // Or use flutter.compileSdkVersion if defined
+    compileSdk = 34  // Or use flutter.compileSdkVersion if defined
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -18,9 +18,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.ivywallet"
+        applicationId = "com.vk.ivy"
         minSdk = 21  // Or use flutter.minSdkVersion if defined
-        targetSdk = 33  // Or use flutter.targetSdkVersion if defined
+        targetSdk = 34 // Or use flutter.targetSdkVersion if defined
         versionCode = 1
         versionName = "1.0"
     }
@@ -38,3 +38,11 @@ flutter {
 
 // Apply Google Services plugin at the end
 apply plugin: 'com.google.gms.google-services'
+
+
+//buildscript {
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:8.1.0' // Already included
+//        classpath 'com.google.gms:google-services:4.3.15' // Ensure this is added for Google Services
+//    }
+//}
