@@ -1,117 +1,65 @@
 import 'package:flutter/material.dart';
-import 'DateSelectorPage.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ivywallet/models/Transactions.dart';
 
-class TransactionSummary extends StatefulWidget {
-  @override
-  _IncomeScreenState createState() => _IncomeScreenState();
-}
+class TransactionSummary extends StatelessWidget {
+  final String type; // 'income' or 'expense'
 
-class _IncomeScreenState extends State<TransactionSummary> {
+  TransactionSummary({required this.type});
+
+  Future<List<Transaction>> fetchTransactions() async {
+    return await Transaction.getTransactionsByType(type);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return FractionallySizedBox(
+      heightFactor: 0.75,
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.black),
-          onPressed: () {},
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.close, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            type == 'income' ? 'Income' : 'Expenses',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
-        actions: [
-          Container(
-            width: 150.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 238, 240, 239),
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DateSelectorPage()),
-                );
-              },
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // Centers the row horizontally
-                crossAxisAlignment:
-                    CrossAxisAlignment.center, // Centers the items vertically
-                children: [
-                  Icon(Icons.calendar_today, color: Colors.black),
-                  SizedBox(width: 4),
-                  Text(
-                    'November', // Placeholder for month text
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
+        body: FutureBuilder<List<Transaction>>(
+          future: fetchTransactions(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Error loading transactions'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No transactions found'));
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final transaction = snapshot.data![index];
+                  return ListTile(
+                    title: Text(transaction.categoryId),
+                    subtitle: Text(transaction.date.toIso8601String()),
+                    trailing: Text(
+                      'KES ${transaction.amount.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        color: type == 'income' ? Colors.teal : Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(width: 16),
-          IconButton(
-            icon: Icon(Icons.add_circle, color: Colors.teal),
-            onPressed: () {},
-          ),
-          SizedBox(width: 16),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16), // Space between AppBar and "Income" text
-            Text(
-              'Income',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              '0.00 KES',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 8),
-            Center(
-              child: Container(
-                width: 300.0,
-                height: 300.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey[50],
-                ),
-                child: Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.download, size: 32, color: Colors.grey),
-                      onPressed: () {
-                        // Add download functionality here
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 32), // Space at the bottom
-          ],
+                  );
+                },
+              );
+            }
+          },
         ),
       ),
     );

@@ -25,142 +25,142 @@ class _DateSelectorPageState extends State<DateSelectorPage> {
   int lastPeriodValue = 0;
   String lastPeriodUnit = 'Weeks';
 
-  void _incrementPeriodValue() {
-    setState(() {
-      lastPeriodValue++;
-    });
-  }
-
-  void _decrementPeriodValue() {
-    setState(() {
-      if (lastPeriodValue > 0) lastPeriodValue--;
-    });
-  }
+  void _incrementPeriodValue() => setState(() => lastPeriodValue++);
+  void _decrementPeriodValue() =>
+      setState(() => lastPeriodValue = lastPeriodValue > 0 ? lastPeriodValue - 1 : 0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-      ),
+      appBar: AppBar(backgroundColor: Colors.black, elevation: 0),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Month Selection
-            Text(
-              'Choose month',
-              style: TextStyle(color: Colors.white, fontSize: 20),
+            _SectionTitle(title: 'Choose month'),
+            SizedBox(height: 10),
+            Row(
+              children: ['October', 'November', 'December']
+                  .map((month) => _MonthButton(
+                month: month,
+                isSelected: selectedMonth == month,
+                onTap: () => setState(() => selectedMonth = month),
+              ))
+                  .toList(),
             ),
+            SizedBox(height: 20),
+            _SectionTitle(title: 'or custom range', isSecondary: true),
+            SizedBox(height: 10),
+            _CustomRangePicker(label: 'From', placeholder: 'Add date'),
+            SizedBox(height: 10),
+            _CustomRangePicker(label: 'To', placeholder: 'Add date'),
+            SizedBox(height: 20),
+            _SectionTitle(title: 'or in the last', isSecondary: true),
             SizedBox(height: 10),
             Row(
               children: [
-                _buildMonthButton('October'),
-                _buildMonthButton('November'),
-                _buildMonthButton('December'),
-              ],
-            ),
-            SizedBox(height: 20),
-
-            // Custom Range Section
-            Text(
-              'or custom range',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            _buildCustomRangePicker('From', 'Add date'),
-            SizedBox(height: 10),
-            _buildCustomRangePicker('To', 'Add date'),
-            SizedBox(height: 20),
-
-            // Last Period Section
-            Text(
-              'or in the last',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                _buildPeriodInput(),
+                _PeriodInput(
+                  value: lastPeriodValue,
+                  onIncrement: _incrementPeriodValue,
+                  onDecrement: _decrementPeriodValue,
+                ),
                 SizedBox(width: 10),
-                _buildPeriodUnitSelector(),
+                _DropdownSelector(
+                  currentValue: lastPeriodUnit,
+                  items: ['Days', 'Weeks', 'Months'],
+                  onChange: (newUnit) =>
+                      setState(() => lastPeriodUnit = newUnit),
+                ),
               ],
             ),
             SizedBox(height: 20),
-
-            // All Time Selection
-            Text(
-              'or all time',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
+            _SectionTitle(title: 'or all time', isSecondary: true),
             SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey[800],
               ),
               onPressed: () {},
-              child: Text(
-                'Select All Time',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('Select All Time', style: TextStyle(color: Colors.white)),
             ),
             Spacer(),
-
-            // Set Button
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  minimumSize: Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                  // Set button action
-                },
-                child: Text(
-                  'Set',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: Size(double.infinity, 50),
               ),
+              onPressed: () {},
+              child: Text('Set', style: TextStyle(color: Colors.white, fontSize: 18)),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildMonthButton(String month) {
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  final bool isSecondary;
+
+  const _SectionTitle({required this.title, this.isSecondary = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        color: isSecondary ? Colors.grey : Colors.white,
+        fontSize: isSecondary ? 16 : 20,
+      ),
+    );
+  }
+}
+
+class _MonthButton extends StatelessWidget {
+  final String month;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _MonthButton({
+    required this.month,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedMonth = month;
-          });
-        },
+        onTap: onTap,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: selectedMonth == month ? Colors.purple : Colors.grey[800],
+            color: isSelected ? Colors.purple : Colors.grey[800],
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
             child: Text(
               month,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildCustomRangePicker(String label, String placeholder) {
+class _CustomRangePicker extends StatelessWidget {
+  final String label;
+  final String placeholder;
+
+  const _CustomRangePicker({required this.label, required this.placeholder});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -170,20 +170,27 @@ class _DateSelectorPageState extends State<DateSelectorPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(color: Colors.grey),
-          ),
-          Text(
-            placeholder,
-            style: TextStyle(color: Colors.grey),
-          ),
+          Text(label, style: TextStyle(color: Colors.grey)),
+          Text(placeholder, style: TextStyle(color: Colors.grey)),
         ],
       ),
     );
   }
+}
 
-  Widget _buildPeriodInput() {
+class _PeriodInput extends StatelessWidget {
+  final int value;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+
+  const _PeriodInput({
+    required this.value,
+    required this.onIncrement,
+    required this.onDecrement,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -194,21 +201,16 @@ class _DateSelectorPageState extends State<DateSelectorPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              '$lastPeriodValue',
-              style: TextStyle(color: Colors.white),
-            ),
+            Text('$value', style: TextStyle(color: Colors.white)),
             Row(
               children: [
                 GestureDetector(
-                  onTap: _decrementPeriodValue,
-                  child:
-                      Icon(Icons.arrow_back_ios, color: Colors.grey, size: 14),
+                  onTap: onDecrement,
+                  child: Icon(Icons.arrow_back_ios, color: Colors.grey, size: 14),
                 ),
                 GestureDetector(
-                  onTap: _incrementPeriodValue,
-                  child: Icon(Icons.arrow_forward_ios,
-                      color: Colors.grey, size: 14),
+                  onTap: onIncrement,
+                  child: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 14),
                 ),
               ],
             ),
@@ -217,24 +219,36 @@ class _DateSelectorPageState extends State<DateSelectorPage> {
       ),
     );
   }
+}
 
-  Widget _buildPeriodUnitSelector() {
+class _DropdownSelector extends StatelessWidget {
+  final String currentValue;
+  final List<String> items;
+  final ValueChanged<String> onChange;
+
+  const _DropdownSelector({
+    required this.currentValue,
+    required this.items,
+    required this.onChange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              lastPeriodUnit,
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
+      child: DropdownButton<String>(
+        value: currentValue,
+        isExpanded: true,
+        dropdownColor: Colors.grey[800],
+        icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+        underline: Container(),
+        style: TextStyle(color: Colors.white),
+        onChanged: onChange,
+        items: items.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
       ),
     );
   }

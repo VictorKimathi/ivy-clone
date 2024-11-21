@@ -63,4 +63,12 @@ class Transaction {
         .get();
     return snapshot.docs.map((doc) => Transaction.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
+
+  static Future<List<Transaction>> getTransactionsByType(String type) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('transactions')
+        .where('type', isEqualTo: type)
+        .get();
+    return snapshot.docs.map((doc) => Transaction.fromMap(doc.data() as Map<String, dynamic>)).toList();
+  }
 }
