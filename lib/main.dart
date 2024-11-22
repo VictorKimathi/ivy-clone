@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -76,10 +77,13 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ).then((value) {
+
         if (value == 'add_expense' || value == 'add_income') {
+
+          final isIncome = value == 'add_income'; // Determine action type
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PaymentScreen()),
+            MaterialPageRoute(builder: (context) => PaymentScreen(transactionType: isIncome ? 'income' : 'expense')),
           );
         }
       });

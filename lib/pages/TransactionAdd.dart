@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
+  final String transactionType; // Add this field to accept the transaction type
+  PaymentScreen({Key? key, required this.transactionType}) : super(key: key);
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
@@ -9,8 +11,15 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   String amount = "0";
   String? selectedAccount;
-  String transactionType = "income"; // Default type
-
+  late String transactionType; // Default type
+  @override
+  void initState() {
+    super.initState();
+    // Initialize transactionType from the constructor
+    transactionType = widget.transactionType;
+    // Log the transactionType to the console
+    print("Transaction type: $transactionType");
+  }
   void onButtonPressed(String value) {
     setState(() {
       if (value == 'clear') {
