@@ -146,6 +146,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "math_expressions",
+      "rootUri": "file:///home/victor/.pub-cache/hosted/pub.dev/math_expressions-2.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "meta",
       "rootUri": "file:///home/victor/.pub-cache/hosted/pub.dev/meta-1.15.0",
       "packageUri": "lib/",
@@ -230,7 +236,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-11-21T17:09:40.344632Z",
+  "generated": "2024-11-22T03:07:53.771366Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///home/victor/snap/flutter/common/flutter",

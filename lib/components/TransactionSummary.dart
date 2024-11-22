@@ -27,7 +27,7 @@ class TransactionSummary extends StatelessWidget {
             },
           ),
           title: Text(
-            type == 'income' ? 'Income' : 'Expenses',
+            type == 'income' ? 'Income1' : 'Expenses',
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -37,7 +37,7 @@ class TransactionSummary extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return const Center(child: Text('Error loading transactions'));
+              return const Center(child: Text('Error loading  transactions'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(child: Text('No transactions found'));
             } else {

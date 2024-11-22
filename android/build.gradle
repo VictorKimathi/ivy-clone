@@ -1,18 +1,23 @@
+// Root-level build.gradle file
+
 allprojects {
     repositories {
-        google()
-        mavenCentral()
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
     }
 }
 
-rootProject.buildDir = "../build"
+rootProject.buildDir = "../build"  // This sets the root build directory
+
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(":app")
+    project.buildDir = "${rootProject.buildDir}/${project.name}"  // Subproject build directories
 }
 
+subprojects {
+    project.evaluationDependsOn(":app")  // Ensures the 'app' project is evaluated first
+}
+
+// Task to clean the build output
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

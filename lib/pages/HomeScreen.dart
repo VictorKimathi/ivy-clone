@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ivywallet/components/TransactionSummary.dart';
 
+import 'DateSelectorPage.dart';
+
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,22 +17,31 @@ class HomeScreen extends StatelessWidget {
           fontSize: 24,
           fontWeight: FontWeight.bold,
         ),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Row(
-              children: [
-                Icon(Icons.calendar_today, color: Colors.black),
-                SizedBox(width: 4),
-                Text(
-                  'November',
-                  style: TextStyle(color: Colors.black),
-                ),
-                Icon(Icons.arrow_drop_down, color: Colors.black),
-              ],
+            padding: const EdgeInsets.only(right: 16.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DateSelectorPage()));  // Open date picker when tapped
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today, color: Colors.black),
+                  SizedBox(width: 4),
+                  Text(
+                   "November",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  Icon(Icons.arrow_drop_down, color: Colors.black),
+                ],
+              ),
             ),
           ),
         ],
+
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ivywallet/pages/DateSelectorPage.dart';
 import 'package:ivywallet/pages/HomeScreen.dart';
+import 'package:ivywallet/pages/TransactionAdd.dart';
 
+import 'components/AddIncome.dart';
 import 'models/Accounts.dart';
+import 'models/Settings.dart';
 import 'pages/Accounts.dart';
 
 void main() {
@@ -16,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'FinanceAI',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -40,6 +44,13 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     HomeScreen(),
     const AccountView(),
+    //This is the screen Xavier Charles to access settings
+
+    // const TransactionPage(),
+    //  DateSelectorPage(),
+    // PaymentScreen(),
+    // CalculatorScreen()
+
   ];
 
   void _onItemTapped(int index) {
@@ -47,7 +58,6 @@ class _MainScreenState extends State<MainScreen> {
       _selectedIndex = index;
     });
   }
-
   void _handleFabAction(BuildContext context) {
     if (_selectedIndex == 0) {
       // Show popup menu for Add Expense/Add Income
@@ -66,13 +76,11 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ).then((value) {
         if (value == 'add_expense') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Expense tapped')),
-          );
+          // Show the AccountScreen as Drawer
+          _showAccountScreenDrawer(context);
         } else if (value == 'add_income') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Income tapped')),
-          );
+          // Option for Add Income
+          _showAccountScreenDrawer(context);
         }
       });
     } else if (_selectedIndex == 1) {
@@ -93,6 +101,23 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
   }
+
+  void _showAccountScreenDrawer(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.zero, // Remove any unnecessary padding
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.75, // 75% of the screen width
+            child:PaymentScreen(), // Make sure AccountScreen is correctly implemented and imported
+          ),
+        );
+      },
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

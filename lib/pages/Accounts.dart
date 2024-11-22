@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/Settings.dart';
+
 class AccountView extends StatelessWidget {
   const AccountView({super.key});
 
@@ -12,7 +14,10 @@ class AccountView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {
-              // Define action for menu icon
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TransactionPage()),
+              );
             },
           ),
         ],
