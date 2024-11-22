@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DateSelectorPage(),
-      theme: ThemeData.dark(),
+      theme: ThemeData.light(),  // Set the theme to light
     );
   }
 }
@@ -32,8 +32,11 @@ class _DateSelectorPageState extends State<DateSelectorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(backgroundColor: Colors.black, elevation: 0),
+      backgroundColor: Colors.white,  // White background for the body
+      appBar: AppBar(
+        backgroundColor: Colors.white,  // Light blue color for AppBar
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -80,15 +83,15 @@ class _DateSelectorPageState extends State<DateSelectorPage> {
             SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
+                backgroundColor: Colors.grey[200],  // Light grey color
               ),
               onPressed: () {},
-              child: Text('Select All Time', style: TextStyle(color: Colors.white)),
+              child: Text('Select All Time', style: TextStyle(color: Colors.black)),
             ),
             Spacer(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: Colors.green,  // Green color for the primary button
                 minimumSize: Size(double.infinity, 50),
               ),
               onPressed: () {},
@@ -112,7 +115,7 @@ class _SectionTitle extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        color: isSecondary ? Colors.grey : Colors.white,
+        color: isSecondary ? Colors.grey : Colors.black,  // Updated to black for light theme
         fontSize: isSecondary ? 16 : 20,
       ),
     );
@@ -138,13 +141,13 @@ class _MonthButton extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.purple : Colors.grey[800],
+            color: isSelected ? Colors.teal : Colors.grey[200],  // Teal when selected, light grey otherwise
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
             child: Text(
               month,
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -164,14 +167,14 @@ class _CustomRangePicker extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.grey[800],
+        color: Colors.grey[200],  // Light grey background
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: Colors.grey)),
-          Text(placeholder, style: TextStyle(color: Colors.grey)),
+          Text(label, style: TextStyle(color: Colors.black)),
+          Text(placeholder, style: TextStyle(color: Colors.black)),
         ],
       ),
     );
@@ -195,22 +198,22 @@ class _PeriodInput extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.grey[800],
+          color: Colors.grey[200],  // Light grey background
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('$value', style: TextStyle(color: Colors.white)),
+            Text('$value', style: TextStyle(color: Colors.black)),
             Row(
               children: [
                 GestureDetector(
                   onTap: onDecrement,
-                  child: Icon(Icons.arrow_back_ios, color: Colors.grey, size: 14),
+                  child: Icon(Icons.arrow_back_ios, color: Colors.black, size: 14),
                 ),
                 GestureDetector(
                   onTap: onIncrement,
-                  child: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 14),
+                  child: Icon(Icons.arrow_forward_ios, color: Colors.black, size: 14),
                 ),
               ],
             ),
@@ -224,7 +227,7 @@ class _PeriodInput extends StatelessWidget {
 class _DropdownSelector extends StatelessWidget {
   final String currentValue;
   final List<String> items;
-  final ValueChanged<String?> onChange; // Allow nullable String
+  final ValueChanged<String?> onChange;
 
   const _DropdownSelector({
     required this.currentValue,
@@ -238,10 +241,10 @@ class _DropdownSelector extends StatelessWidget {
       child: DropdownButton<String>(
         value: currentValue,
         isExpanded: true,
-        dropdownColor: Colors.grey[800],
-        icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+        dropdownColor: Colors.grey[200],  // Light grey background for dropdown
+        icon: Icon(Icons.arrow_drop_down, color: Colors.black),
         underline: Container(),
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.black),
         onChanged: onChange,
         items: items.map((String value) {
           return DropdownMenuItem<String>(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -7,6 +8,8 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   String amount = "0";
+  String? selectedAccount;
+  String transactionType = "income"; // Default type
 
   void onButtonPressed(String value) {
     setState(() {
@@ -26,6 +29,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
   }
 
+  Future<void> saveTransaction() async {
+    if (double.tryParse(amount) != null && double.parse(amount) > 0 && selectedAccount != null) {
+      try {
+        await FirebaseFirestore.instance.collection('transactions').add({
+          'amount': double.parse(amount),
+          'timestamp': FieldValue.serverTimestamp(),
+          'type': transactionType,
+          'account': selectedAccount,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Transaction saved")));
+        setState(() {
+          amount = "0"; // Reset amount
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error saving transaction: $e")));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter a valid amount and select an account")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +59,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Account',
+          'Transaction',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -46,17 +70,47 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top Button Tabs
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  accountButton('Mpesa', selected: false),
-                  accountButton('Equity', selected: true),
-                  accountButton('Mobile', selected: false),
-                ],
-              ),
+            // Account Selector
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('accounts').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('No accounts available.'));
+                }
+
+                var accountDocs = snapshot.data!.docs;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: accountDocs.map((doc) {
+                      String accountName = doc['name'];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedAccount = accountName;
+                          });
+                        },
+                        child: accountButton(accountName, selected: selectedAccount == accountName),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
+            ),
+
+            // Transaction Type Toggle
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                transactionTypeButton('Income', transactionType == 'income'),
+                transactionTypeButton('Expense', transactionType == 'expense'),
+              ],
             ),
 
             // Amount Display
@@ -94,19 +148,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  bottomActionButton(Icons.close, 'Cancel', onButtonPressed),
-                  IconButton(
-                    icon: Icon(Icons.calculate, color: Colors.blue),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CalculatorScreen(),
-                        ),
-                      );
-                    },
+                  bottomActionButton(Icons.close, 'Cancel', () {
+                    setState(() {
+                      amount = "0";
+                      selectedAccount = null;
+                    });
+                  }),
+                  GestureDetector(
+                    onTap: saveTransaction,
+                    child: bottomActionButton(Icons.check, 'Enter', null),
                   ),
-                  bottomActionButton(Icons.check, 'Enter', onButtonPressed),
                 ],
               ),
             ),
@@ -129,6 +180,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
         style: TextStyle(
           color: selected ? Colors.white : Colors.black,
           fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget transactionTypeButton(String label, bool selected) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          transactionType = label.toLowerCase();
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? Colors.blue : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -185,46 +262,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget bottomActionButton(IconData icon, String action, Function(String) onPressed) {
+  Widget bottomActionButton(IconData icon, String label, VoidCallback? onPressed) {
     return GestureDetector(
-      onTap: () => onPressed(action),
+      onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: action == 'Enter' ? Colors.green : Colors.grey[200],
+          color: label == 'Enter' ? Colors.green : Colors.grey[200],
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           children: [
             Icon(
               icon,
-              color: action == 'Enter' ? Colors.white : Colors.black,
+              color: label == 'Enter' ? Colors.white : Colors.black,
             ),
             const SizedBox(width: 5),
             Text(
-              action,
+              label,
               style: TextStyle(
-                color: action == 'Enter' ? Colors.white : Colors.black,
+                color: label == 'Enter' ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// Define CalculatorScreen
-class CalculatorScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Calculator"),
-      ),
-      body: Center(
-        child: CalculatorScreen(),
       ),
     );
   }

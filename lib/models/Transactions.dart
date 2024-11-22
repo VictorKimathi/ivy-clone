@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+import '../pages/Account.dart';
 
 class Transaction {
   String id;
@@ -7,6 +10,7 @@ class Transaction {
   String type; // 'expense' or 'income'
   String categoryId;
   DateTime date;
+  Account? account; // This will hold the account information
 
   Transaction({
     required this.id,
@@ -15,6 +19,7 @@ class Transaction {
     required this.type,
     required this.categoryId,
     required this.date,
+    this.account, // Optional: when constructing, it may not be available yet
   });
 
   // Convert to Firebase document
@@ -41,34 +46,72 @@ class Transaction {
     );
   }
 
-  // Save transaction to Firestore
-  Future<void> save() async {
-    await FirebaseFirestore.instance.collection('transactions').doc(id).set(toMap());
+  // Fetch account information for the transaction
+  Future<void> fetchAccount() async {
+    account = await Account.getAccountById(accountId);
   }
 
-  // Fetch all transactions for an account
-  static Future<List<Transaction>> getTransactionsByAccount(String accountId) async {
+  // Save transaction to Firestore
+  Future<void> save() async {
+    await FirebaseFirestore.instance.collection('transactions').doc(id).set(
+        toMap());
+  }
+
+  // Fetch all transactions for an account (with account details)
+  static Future<List<Transaction>> getTransactionsByAccount(
+      String accountId) async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('transactions')
         .where('accountId', isEqualTo: accountId)
         .get();
-    return snapshot.docs.map((doc) => Transaction.fromMap(doc.data() as Map<String, dynamic>)).toList();
+
+    // Convert documents to Transaction objects and fetch account details
+    List<Transaction> transactions = snapshot.docs.map((doc) {
+      Transaction transaction = Transaction.fromMap(
+          doc.data() as Map<String, dynamic>);
+      transaction.fetchAccount(); // Fetch account details asynchronously
+      return transaction;
+    }).toList();
+
+    return transactions;
   }
 
-  // Fetch transactions by category
-  static Future<List<Transaction>> getTransactionsByCategory(String categoryId) async {
+  // Fetch transactions by category (with account details)
+  static Future<List<Transaction>> getTransactionsByCategory(
+      String categoryId) async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('transactions')
         .where('categoryId', isEqualTo: categoryId)
         .get();
-    return snapshot.docs.map((doc) => Transaction.fromMap(doc.data() as Map<String, dynamic>)).toList();
+
+    // Convert documents to Transaction objects and fetch account details
+    List<Transaction> transactions = snapshot.docs.map((doc) {
+      Transaction transaction = Transaction.fromMap(
+          doc.data() as Map<String, dynamic>);
+      transaction.fetchAccount(); // Fetch account details asynchronously
+      return transaction;
+    }).toList();
+
+    return transactions;
   }
 
   static Future<List<Transaction>> getTransactionsByType(String type) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('transactions')
-        .where('type', isEqualTo: type)
-        .get();
-    return snapshot.docs.map((doc) => Transaction.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('transactions')
+          .where('type', isEqualTo: type)
+          .get();
+
+      print("Fetched ${snapshot.docs.length} transactions for type: $type");
+
+      return snapshot.docs
+          .map((doc) => Transaction.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching transactions: $e");
+      }
+      return [];
+    }
   }
 }
